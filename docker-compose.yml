@@ -10,8 +10,9 @@ services:
       - ./node_modules:/home/node/app/node_modules
       - ./package.json:/home/node/app/package.json
       - ./package-lock.json:/home/node/app/package-lock.json
+      - ./entrypoint.sh:/home/node/app/entrypoint.sh
     env_file:
       - .env
     environment:
       NODE_ENV: production
-    command: apt-get update -y && apt-get install -y ffmpeg && node ./src/index.js
+    entrypoint: /home/node/app/entrypoint.sh
