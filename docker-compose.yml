@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  jellyfinradio:
+    image: node:lts
+    restart: always
+    container_name: jellyfin-radio-discord
+    user: 0:0
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env
+    volumes:
+      - ./:/home/node/app
+    command: node ./src/index.js

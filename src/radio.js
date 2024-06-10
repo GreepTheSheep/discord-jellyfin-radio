@@ -1,5 +1,6 @@
 const Client = require("discord.js").Client,
     ActivityType = require("discord.js").ActivityType,
+    ChannelType =  require("discord.js").ChannelType,
     jfClient = require("jellyfin").Client,
     djsVoice = require("@discordjs/voice");
 
@@ -32,8 +33,7 @@ class Radio {
 
         this.player.on("error", (err)=>{
             console.error("Error detected on audio player: " + err.message());
-            this.connection.disconnect();
-            this.connectToVoiceChannel();
+            this.connection.rejoin();
         });
     }
 
@@ -71,14 +71,16 @@ class Radio {
 
         try {
             await djsVoice.entersState(this.connection, djsVoice.VoiceConnectionStatus.Ready, 30_000);
+            if (channel.type == ChannelType.GuildStageVoice) {
+                channel.guild.members.me.voice.setSuppressed(false);
+            }
             this.connection.on("error", (err)=>{
                 console.error("Error detected on voice connection: " + err.message());
-                this.connection.disconnect();
-                this.connectToVoiceChannel();
+                this.connection.rejoin();
             });
             return this.connection;
         } catch (error) {
-            this.connection.destroy();
+            this.connection.rejoin();
             throw error;
         }
     }

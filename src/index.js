@@ -15,6 +15,7 @@ const Command = require('./structures/Command'),
     }),
     Radio = require("./radio");
 
+let radio = null;
 
 jf.login().then(()=>{
     console.log("Connected to Jellyfin as", jf.user.name, "on", jf.options.deviceInfo.name);
@@ -34,7 +35,7 @@ let commands=[];
 client.on('ready', async () => {
     console.log(`🤖 Logged in as ${client.user.tag}!`);
     /** @type {Radio} */
-    const radio = new Radio(client, jf);
+    radio = new Radio(client, jf);
     /** @type {Radio} */
     client.radio = radio;
 
@@ -46,9 +47,14 @@ client.on('ready', async () => {
     //     await require('./registerCommandsScript')(guild.id, client.user.id, commands);
     // });
 
-    await client.radio.connectToVoiceChannel();
-    client.radio.connection.subscribe(radio.player);
-    client.radio.playToPlayer();
+    try {
+        await client.radio.connectToVoiceChannel();
+        client.radio.connection.subscribe(radio.player);
+        client.radio.playToPlayer();
+    } catch (err) {
+        console.error("Error detected on voice connect and play audio: " + err);
+        process.exit(1);
+    }
 });
 
 client.on('interactionCreate', async interaction => {
@@ -117,3 +123,24 @@ client.on('guildCreate', guild=>{
 client.on('guildDelete', guild=>{
     console.log('📌 Guild left: ' + guild.name);
 });
+
+process.on('SIGINT', exit);  // CTRL+C
+process.on('SIGQUIT', exit); // Keyboard quit
+process.on('SIGTERM', kill); // `kill` command
+process.on('SIGWINCH', exit); // docker down or else
+
+function exit() {
+    if (radio != null && radio.connection != null) {
+        radio.connection.disconnect();
+        radio.connection.destroy();
+    }
+    process.exit(0);
+}
+
+function kill() {
+    if (radio != null && radio.connection != null) {
+        radio.connection.disconnect();
+        radio.connection.destroy();
+    }
+    process.exit(0);
+}
