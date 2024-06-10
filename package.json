@@ -1,0 +1,31 @@
+{
+    "name": "discord-template-bot",
+    "version": "1.0.0",
+    "private": true,
+    "description": "A discord bot",
+    "main": "src/index.js",
+    "scripts": {
+        "start": "node .",
+        "lint": "eslint src --fix",
+        "dev": "nodemon src/bot.js"
+    },
+    "engines": {
+        "node": ">=20"
+    },
+    "keywords": [
+        "discord",
+        "bot"
+    ],
+    "author": "GreepTheSheep",
+    "license": "MIT",
+    "homepage": "https://github.com/GreepTheSheep",
+    "funding": "https://github.com/sponsors/GreepTheSheep",
+    "dependencies": {
+        "discord.js": "^14.14.1",
+        "dotenv": "^16.3.1"
+    },
+    "devDependencies": {
+        "eslint": "^8.52.0",
+        "nodemon": "^2.0.22"
+    }
+}
