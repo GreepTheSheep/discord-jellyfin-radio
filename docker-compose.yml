@@ -1,15 +1,17 @@
 version: '3.8'
 services:
-  jellyfinradio:
+  discord:
     image: node:lts
+    container_name: tangled-radio-discordbot
     restart: always
-    container_name: jellyfin-radio-discord
-    user: 0:0
     working_dir: /home/node/app
-    environment:
-      - NODE_ENV=production
+    volumes:
+      - ./src:/home/node/app/src
+      - ./node_modules:/home/node/app/node_modules
+      - ./package.json:/home/node/app/package.json
+      - ./package-lock.json:/home/node/app/package-lock.json
     env_file:
       - .env
-    volumes:
-      - ./:/home/node/app
+    environment:
+      NODE_ENV: production
     command: node ./src/index.js
