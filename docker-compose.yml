@@ -14,4 +14,4 @@ services:
       - .env
     environment:
       NODE_ENV: production
-    command: node ./src/index.js
+    command: apt-get update -y && apt-get install -y ffmpeg && node ./src/index.js
