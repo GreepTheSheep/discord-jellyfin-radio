@@ -1,5 +1,5 @@
 {
-    "name": "discord-template-bot",
+    "name": "discord-jellyfin-radio",
     "version": "1.0.0",
     "private": true,
     "description": "A discord bot",
@@ -21,8 +21,11 @@
     "homepage": "https://github.com/GreepTheSheep",
     "funding": "https://github.com/sponsors/GreepTheSheep",
     "dependencies": {
+        "@discordjs/voice": "^0.17.0",
         "discord.js": "^14.14.1",
-        "dotenv": "^16.3.1"
+        "dotenv": "^16.3.1",
+        "jellyfin": "^0.1.1",
+        "libsodium-wrappers": "^0.7.13"
     },
     "devDependencies": {
         "eslint": "^8.52.0",
