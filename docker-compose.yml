@@ -6,11 +6,7 @@ services:
     restart: always
     working_dir: /home/node/app
     volumes:
-      - ./src:/home/node/app/src
-      - ./node_modules:/home/node/app/node_modules
-      - ./package.json:/home/node/app/package.json
-      - ./package-lock.json:/home/node/app/package-lock.json
-      - ./entrypoint.sh:/home/node/app/entrypoint.sh
+      - ./:/home/node/app
     env_file:
       - .env
     environment:
