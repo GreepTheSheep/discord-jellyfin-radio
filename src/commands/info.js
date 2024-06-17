@@ -51,7 +51,7 @@ exports.execute = async (interaction, commands, client) => {
         .addFields([
             {name:'Version', value:`v${version}\nGit commit: \`${gitCommit}\`\nBuilt at: <t:${gitCommitDate.getTime() / 1000}>`, inline:true},
             {name:'Uptime:', value:`${uptimeWeeks} weeks, ${uptimeDays} days, ${uptimeHours} hours, ${uptimeminutes} minutes`, inline:true},
-            {name:'Technical informations', value:`Bot Library: [Discord.js](https://discord.js.org) (Version ${djsVersion})\n[Jellyfin Library](https://github.com/GreepTheSheep/node-trackmania.io) (Version ${jellyfinVersion})\n[Discord.js Voice Library](https://discord.js.org/docs/packages/voice/main) (Version ${djsVoiceVersion})\nNode.js version: ${process.version}`}
+            {name:'Technical informations', value:`Node.js version ${process.version}\n[Discord.js](https://discord.js.org) version ${djsVersion}\n[Jellyfin Library](https://jellyfin-node.greep.fr) version ${jellyfinVersion}\n[Discord.js Voice](https://discord.js.org/docs/packages/voice/main) version ${djsVoiceVersion}`}
         ])
         .setThumbnail(interaction.client.user.displayAvatarURL({size:512}))
         .setFooter({
