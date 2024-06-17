@@ -30,10 +30,10 @@ exports.args = [];
  */
 exports.execute = async (interaction, commands, client) => {
     let nowPlayingItem = client.radio.nowPlayingItem;
-    let channel = await client.channels.fetch(process.env.VOICE_CHANNEL);
+    let channel = interaction.guild.members.me.voice.channel;
     let embed = new EmbedBuilder();
 
-    embed.setTitle(`Now playing on https://discord.com/channels/${channel.guild.id}/${channel.id}`);
+    embed.setTitle(`Now playing ${channel != null ? `on https://discord.com/channels/${channel.guild.id}/${channel.id}` : ""}`);
     embed.addFields([
         {
             name: "Title",
