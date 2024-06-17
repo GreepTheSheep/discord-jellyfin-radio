@@ -9,7 +9,7 @@ class Radio {
         /** @type {Client} */
         this.client = client;
 
-        /** @type {jfClient} */
+        /** @type {import('jellyfin/typings/client/Client')} */
         this.jellyfin = jf;
 
         /** @type {djsVoice.AudioPlayer} */
@@ -23,7 +23,7 @@ class Radio {
         /** @type {?djsVoice.VoiceConnection} */
         this.connection = null;
 
-        /** @type {?import('jellyfin/src/structures/Item')} */
+        /** @type {?import('jellyfin/typings/structures/Item')} */
         this.nowPlayingItem = null;
 
         this.player.on("stateChange", (oldState, newState) => {
@@ -50,12 +50,14 @@ class Radio {
             inputType: djsVoice.StreamType.Arbitrary,
         });
         this.player.play(audioResource);
+        this.jellyfin.playstate.reportItemPlayed(this.nowPlayingItem.id);
 
         return djsVoice.entersState(this.player, djsVoice.AudioPlayerStatus.Playing, 5000);
     }
 
     async stopPlaying() {
         this.player.stop();
+        this.jellyfin.playstate.reportItemStopped(this.nowPlayingItem.id);
         return djsVoice.entersState(this.player, djsVoice.AudioPlayerStatus.Idle, 5000);
     }
 
