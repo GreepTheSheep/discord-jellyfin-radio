@@ -34,7 +34,7 @@ exports.execute = async (interaction, commands, client) => {
         content: ':+1:',
     });
     setTimeout(()=>{
-        reply.delete();
+        if (reply != null) reply.delete();
     }, 2000);
 };
 
