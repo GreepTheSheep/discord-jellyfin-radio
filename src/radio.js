@@ -38,7 +38,9 @@ class Radio {
 
         this.client.on("messageCreate", msg=>{
             if (msg.channel.id == process.env.VOICE_CHANNEL) {
-                setTimeout(()=>msg.delete(), 5 * 60 * 1000); // 5 minutes
+                setTimeout(()=>{
+                    if (msg != null || msg.deletable) msg.delete();
+                }, 5 * 60 * 1000); // 5 minutes
             }
         });
     }
