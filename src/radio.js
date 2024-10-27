@@ -54,7 +54,7 @@ class Radio {
         this.nowPlayingItem = views[0];
         console.log(this.nowPlayingItem.artists.join(", ") + " - " + this.nowPlayingItem.name);
         this.client.user.setActivity({name: this.nowPlayingItem.artists.join(", ") + " - " + this.nowPlayingItem.name, type: ActivityType.Playing});
-        let audioResource = djsVoice.createAudioResource(this.jellyfin.options.baseUrl + "Audio/" + this.nowPlayingItem.id + "/stream", {
+        let audioResource = djsVoice.createAudioResource(this.jellyfin.options.baseUrl + "Audio/" + this.nowPlayingItem.id + "/stream.mp3", {
             inputType: djsVoice.StreamType.Arbitrary,
         });
         this.player.play(audioResource);
