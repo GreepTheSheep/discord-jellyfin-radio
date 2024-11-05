@@ -1,6 +1,6 @@
 {
     "name": "discord-jellyfin-radio",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "private": true,
     "description": "A discord bot",
     "main": "src/index.js",
