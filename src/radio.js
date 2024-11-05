@@ -58,7 +58,7 @@ class Radio {
             inputType: djsVoice.StreamType.Opus,
         });
         this.player.play(audioResource);
-        this.jellyfin.playstate.reportItemPlayed(this.nowPlayingItem.id);
+        this.jellyfin.playstate.reportItemPlayed(this.nowPlayingItem.id, "DirectStream");
 
         return djsVoice.entersState(this.player, djsVoice.AudioPlayerStatus.Playing, 5000);
     }
