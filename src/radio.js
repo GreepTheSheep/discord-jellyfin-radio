@@ -70,14 +70,14 @@ class Radio {
             inputType: djsVoice.StreamType.Arbitrary,
         });
         this.player.play(audioResource);
-        this.jellyfin.playstate.reportItemPlayed(this.nowPlayingItem.id, "DirectStream");
+        //this.jellyfin.playstate.reportItemPlayed(this.nowPlayingItem.id, "DirectStream");
 
         return djsVoice.entersState(this.player, djsVoice.AudioPlayerStatus.Playing, 5000);
     }
 
     async stopPlaying() {
         this.player.stop();
-        this.jellyfin.playstate.reportItemStopped(this.nowPlayingItem.id);
+        //this.jellyfin.playstate.reportItemStopped(this.nowPlayingItem.id);
         return djsVoice.entersState(this.player, djsVoice.AudioPlayerStatus.Idle, 5000);
     }
 
