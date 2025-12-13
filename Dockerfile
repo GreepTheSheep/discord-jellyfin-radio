@@ -5,7 +5,7 @@ COPY package.json /home/node/app/
 COPY src/ /home/node/app/src/
 
 RUN apt update
-RUN apt install -y ffmpeg
+RUN apt install -y ffmpeg libopus-dev libssl-dev
 RUN npm i --production
 
 CMD [ "node", "./src/index.js" ]
