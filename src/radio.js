@@ -27,8 +27,15 @@ class Radio {
         this.nowPlayingItem = null;
 
         this.player.on("stateChange", (oldState, newState) => {
-            console.log(newState.status);
-            if (newState.status == "idle") this.playToPlayer();
+            console.log("> " + newState.status);
+        });
+
+        this.player.on(djsVoice.AudioPlayerStatus.Idle, () => {
+            this.playToPlayer();
+        });
+
+        this.player.on('debug', message => {
+            console.log('Player debug:', message);
         });
 
         this.player.on("error", (err)=>{
@@ -54,7 +61,7 @@ class Radio {
         });
         this.nowPlayingItem = views[0];
         if (this.nowPlayingItem == undefined) return this.playToPlayer();
-        console.log(this.nowPlayingItem.artists.join(", ") + " - " + this.nowPlayingItem.name);
+        console.log(this.nowPlayingItem.artists.join(", ") + " - " + this.nowPlayingItem.name + " [" + this.nowPlayingItem.album + "] (id: " + this.nowPlayingItem.id + ")");
         this.client.user.setActivity({name: this.nowPlayingItem.artists.join(", ") + " - " + this.nowPlayingItem.name, type: ActivityType.Playing});
         let streamUrl = (
             `${this.jellyfin.options.baseUrl}audio` +
@@ -70,6 +77,12 @@ class Radio {
         );
         let audioResource = djsVoice.createAudioResource(streamUrl, {
             inputType: djsVoice.StreamType.Arbitrary,
+            metadata: {
+                title: this.nowPlayingItem.name,
+                artist: this.nowPlayingItem.artists.join(", "),
+                album: this.nowPlayingItem.album,
+                id: this.nowPlayingItem.id
+            }
         });
         this.player.play(audioResource);
         //this.jellyfin.playstate.reportItemPlayed(this.nowPlayingItem.id, "DirectStream");
@@ -98,6 +111,9 @@ class Radio {
             if (channel.type == ChannelType.GuildStageVoice) {
                 channel.guild.members.me.voice.setSuppressed(false);
             }
+            this.connection.on('debug', message => {
+                console.log('Connection debug:', message);
+            });
             this.connection.on("error", (err)=>{
                 console.error("Error detected on voice connection: " + err.message());
                 this.connection.rejoin();

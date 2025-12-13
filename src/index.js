@@ -33,7 +33,7 @@ jf.login().then(()=>{
 let commands=[];
 
 
-client.on('ready', async () => {
+client.on('clientReady', async () => {
     console.log(`🤖 Logged in as ${client.user.tag}!`);
     /** @type {Radio} */
     radio = new Radio(client, jf);
@@ -47,6 +47,14 @@ client.on('ready', async () => {
     // client.guilds.cache.forEach(async (guild) => {
     //     await require('./registerCommandsScript')(guild.id, client.user.id, commands);
     // });
+
+    // Check for aes-256-gcm support
+    if (!require('node:crypto').getCiphers().includes('aes-256-gcm')) {
+        console.error("❌ AES-256-GCM is not supported on your system. Voice connections will not work.");
+        process.exit(1);
+    } else {
+        console.log("✅ AES-256-GCM is supported on your system.");
+    }
 
     try {
         await client.radio.connectToVoiceChannel();
