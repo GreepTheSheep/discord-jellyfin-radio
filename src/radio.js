@@ -48,6 +48,7 @@ class Radio {
     async playToPlayer() {
         let views = await this.jellyfin.getItems({
             mediaTypes: "Audio",
+            includeItemTypes: [ "Audio" ],
             sortBy: "Random",
             limit: 1
         });
