@@ -1,8 +1,8 @@
 services:
   discord-radio:
-    image: ghcr.io/greepthesheep/discord-jellyfin-radio/discord-jellyfin-radio:latest
+    build: .
     container_name: jellyfin-radio-discordbot-tangled
-    restart: 'unless-stopped'
+    restart: always
     env_file:
       - .env
     environment:
