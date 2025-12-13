@@ -53,6 +53,7 @@ class Radio {
             limit: 1
         });
         this.nowPlayingItem = views[0];
+        if (this.nowPlayingItem == undefined) return this.playToPlayer();
         console.log(this.nowPlayingItem.artists.join(", ") + " - " + this.nowPlayingItem.name);
         this.client.user.setActivity({name: this.nowPlayingItem.artists.join(", ") + " - " + this.nowPlayingItem.name, type: ActivityType.Playing});
         let streamUrl = (
