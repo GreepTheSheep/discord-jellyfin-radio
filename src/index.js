@@ -11,7 +11,8 @@ const Command = require('./structures/Command'),
         clientInfo: {
             name: package.name,
             version: package.version
-        }
+        },
+        dev: true
     }),
     Radio = require("./radio");
 
