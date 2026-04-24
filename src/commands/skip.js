@@ -31,7 +31,7 @@ export const execute = async (interaction, commands, client) => {
         content: ':+1:',
     });
     setTimeout(()=>{
-        if (reply != null) reply.delete();
+        if (reply != null) reply.delete().catch(()=>{});
     }, 2000);
 };
 
