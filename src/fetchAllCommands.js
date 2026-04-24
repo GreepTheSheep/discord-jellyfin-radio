@@ -1,11 +1,12 @@
-const fs = require('fs');
-const Command = require('./structures/Command');
+import fs from 'fs';
+import { pathToFileURL } from 'node:url';
+import Command from './structures/Command.js';
 
 /**
  * Fetch all commands from the commands folder
- * @returns {Command[]} The list of commands
+ * @returns {Promise<Command[]>} The list of commands
  */
-module.exports = function(){
+export default async function fetchAllCommands(){
     const arr=[];
     const commandFiles = fs.readdirSync('./src/commands');
     for (const file of commandFiles) {
@@ -15,17 +16,17 @@ module.exports = function(){
             for (const categoryCommand of categoryCommands) {
                 // take only if file is a JS file
                 if (categoryCommand.endsWith('.js')) {
-                    const command = require(`./commands/${file}/${categoryCommand}`);
-                    arr.push(new Command(command, file));
+                    const module = await import(pathToFileURL(`./src/commands/${file}/${categoryCommand}`).href);
+                    arr.push(new Command(module, file));
                 }
             }
         } else {
             if (file.endsWith('.js')) {
-                const command = require(`./commands/${file}`);
-                arr.push(new Command(command));
+                const module = await import(pathToFileURL(`./src/commands/${file}`).href);
+                arr.push(new Command(module));
             }
         }
     }
     console.log(`⌨️  ${arr.length} commands loaded`);
     return arr;
-};
+}

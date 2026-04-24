@@ -1,16 +1,19 @@
-const Client = require("discord.js").Client,
-    ActivityType = require("discord.js").ActivityType,
-    ChannelType =  require("discord.js").ChannelType,
-    jfClient = require("jellyfin").Client,
-    djsVoice = require("@discordjs/voice");
+import { Client, ActivityType, ChannelType } from "discord.js";
+import * as djsVoice from "@discordjs/voice";
+import { getItemsApi } from "@jellyfin/sdk/lib/utils/api/items-api.js";
+import { BaseItemKind } from "@jellyfin/sdk/lib/generated-client/models/base-item-kind.js";
+import { ItemSortBy } from "@jellyfin/sdk/lib/generated-client/models/item-sort-by.js";
 
 class Radio {
-    constructor(client, jf) {
+    constructor(client, api, user) {
         /** @type {Client} */
         this.client = client;
 
-        /** @type {import('jellyfin/typings/client/Client')} */
-        this.jellyfin = jf;
+        /** @type {import('@jellyfin/sdk/lib/api.js').Api} */
+        this.jellyfin = api;
+
+        /** @type {import('@jellyfin/sdk/lib/generated-client/models/user-dto.js').UserDto} */
+        this.user = user;
 
         /** @type {djsVoice.AudioPlayer} */
         this.player = djsVoice.createAudioPlayer({
@@ -23,7 +26,7 @@ class Radio {
         /** @type {?djsVoice.VoiceConnection} */
         this.connection = null;
 
-        /** @type {?import('jellyfin/typings/structures/Item')} */
+        /** @type {?import('@jellyfin/sdk/lib/generated-client/models/base-item-dto.js').BaseItemDto} */
         this.nowPlayingItem = null;
 
         this.player.on("stateChange", (oldState, newState) => {
@@ -34,9 +37,11 @@ class Radio {
             this.playToPlayer();
         });
 
+        /*
         this.player.on('debug', message => {
             console.log('Player debug:', message);
         });
+        */
 
         this.player.on("error", (err)=>{
             console.error("Error detected on audio player: " + err.message());
@@ -53,24 +58,25 @@ class Radio {
     }
 
     async playToPlayer() {
-        let views = await this.jellyfin.getItems({
-            mediaTypes: "Audio",
-            includeItemTypes: [ "Audio" ],
-            sortBy: "Random",
+        const { data } = await getItemsApi(this.jellyfin).getItems({
+            userId: this.user.Id,
+            includeItemTypes: [BaseItemKind.Audio],
+            recursive: true,
+            sortBy: [ItemSortBy.Random],
             limit: 1
         });
-        this.nowPlayingItem = views[0];
+        this.nowPlayingItem = data.Items?.[0];
         if (this.nowPlayingItem == undefined) return this.playToPlayer();
-        console.log(this.nowPlayingItem.artists.join(", ") + " - " + this.nowPlayingItem.name + " [" + this.nowPlayingItem.album + "] (id: " + this.nowPlayingItem.id + ")");
-        this.client.user.setActivity({name: this.nowPlayingItem.artists.join(", ") + " - " + this.nowPlayingItem.name, type: ActivityType.Playing});
+        console.log(this.nowPlayingItem.Artists?.join(", ") + " - " + this.nowPlayingItem.Name + " [" + this.nowPlayingItem.Album + "] (id: " + this.nowPlayingItem.Id + ")");
+        this.client.user.setActivity({name: this.nowPlayingItem.Artists?.join(", ") + " - " + this.nowPlayingItem.Name, type: ActivityType.Playing});
         let streamUrl = (
-            `${this.jellyfin.options.baseUrl}audio` +
-            `/${this.nowPlayingItem.id}/universal` +
-            `?userId=${this.jellyfin.user.id}` +
-            `&deviceId=${this.jellyfin.sessionInfo.deviceId}` +
+            `${this.jellyfin.basePath}/audio` +
+            `/${this.nowPlayingItem.Id}/universal` +
+            `?userId=${this.user.Id}` +
+            `&deviceId=${this.jellyfin.deviceInfo.id}` +
             `&audioCodec=aac` +
             `&apiKey=${this.jellyfin.accessToken}` +
-            `&playSessionId=${this.jellyfin.sessionInfo.deviceId}` +
+            `&playSessionId=${this.jellyfin.deviceInfo.id}` +
             '&container=opus,mp3,aac,m4a,m4b,flac,wav,ogg' +
             '&transcodingContainer=ts' +
             '&transcodingProtocol=http'
@@ -78,10 +84,10 @@ class Radio {
         let audioResource = djsVoice.createAudioResource(streamUrl, {
             inputType: djsVoice.StreamType.Arbitrary,
             metadata: {
-                title: this.nowPlayingItem.name,
-                artist: this.nowPlayingItem.artists.join(", "),
-                album: this.nowPlayingItem.album,
-                id: this.nowPlayingItem.id
+                title: this.nowPlayingItem.Name,
+                artist: this.nowPlayingItem.Artists?.join(", "),
+                album: this.nowPlayingItem.Album,
+                id: this.nowPlayingItem.Id
             }
         });
         this.player.play(audioResource);
@@ -126,4 +132,4 @@ class Radio {
     }
 }
 
-module.exports = Radio;
+export default Radio;

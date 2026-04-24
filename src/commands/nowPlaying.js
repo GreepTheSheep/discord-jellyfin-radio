@@ -1,25 +1,22 @@
-const Command = require('../structures/Command'),
-    {MessageEmbed, CommandInteraction, SelectMenuInteraction, Message, MessageActionRow, MessageButton, MessageSelectMenu, ButtonStyle, Client, EmbedBuilder } = require('discord.js');
+import { EmbedBuilder, CommandInteraction, ButtonInteraction, SelectMenuInteraction, ModalSubmitInteraction, Client } from 'discord.js';
 
 /**
  * Set the command here, it's what we'll type in the message
  * @type {string}
  */
-exports.name = 'radio_nowplaying';
-
+export const name = 'radio_nowplaying';
 
 /**
  * Set the description here, this is what will show up when you need help for the command
  * @type {string}
  */
-exports.description = 'Shows the current song playing';
-
+export const description = 'Shows the current song playing';
 
 /**
  * Set the command arguments here, this is what will show up when you type the command
  * @type {Command.commandArgs[]}
  */
-exports.args = [];
+export const args = [];
 
 /**
  * Set the usage here, this is what will show up when you type the command
@@ -28,7 +25,7 @@ exports.args = [];
  * @param {Command[]} commands
  * @param {Client} client
  */
-exports.execute = async (interaction, commands, client) => {
+export const execute = async (interaction, commands, client) => {
     let nowPlayingItem = client.radio.nowPlayingItem;
     let channel = interaction.guild.members.me.voice.channel;
     let embed = new EmbedBuilder();
@@ -37,18 +34,18 @@ exports.execute = async (interaction, commands, client) => {
     embed.addFields([
         {
             name: "Title",
-            value: nowPlayingItem.name
+            value: nowPlayingItem.Name
         },
         {
-            name: `Artist${nowPlayingItem.artists.length > 1 ? "s" : ""}`,
-            value: nowPlayingItem.artists.join(", ")
+            name: `Artist${nowPlayingItem.Artists?.length > 1 ? "s" : ""}`,
+            value: nowPlayingItem.Artists?.join(", ") ?? "Unknown"
         },
         {
             name: "Album",
-            value: nowPlayingItem.album
+            value: nowPlayingItem.Album ?? "Unknown"
         }
     ]);
-    embed.setThumbnail(client.radio.jellyfin.options.baseUrl + "Items/" + nowPlayingItem.id + "/Images/Primary");
+    embed.setThumbnail(client.radio.jellyfin.basePath + "/Items/" + nowPlayingItem.Id + "/Images/Primary");
 
     interaction.reply({
         embeds: [embed]
@@ -62,7 +59,7 @@ exports.execute = async (interaction, commands, client) => {
  * @param {string} argument
  * @param {Command[]} commands
  */
-exports.executeButton = async (interaction, buttonId, argument, commands) => {};
+export const executeButton = async (interaction, buttonId, argument, commands) => {};
 
 /**
  * This method is executed when an update is made in a selectMenu
@@ -71,7 +68,7 @@ exports.executeButton = async (interaction, buttonId, argument, commands) => {};
  * @param {string} argument
  * @param {Command[]} commands
  */
-exports.executeSelectMenu = async (interaction, categoryId, argument, commands) => {};
+export const executeSelectMenu = async (interaction, categoryId, argument, commands) => {};
 
 /**
  * This method is executed when a modal dialog is submitted
@@ -80,4 +77,4 @@ exports.executeSelectMenu = async (interaction, categoryId, argument, commands) 
  * @param {string} argument
  * @param {Command[]} commands
  */
-exports.executeModal = async (interaction, modalId, argument, commands) => {};
+export const executeModal = async (interaction, modalId, argument, commands) => {};

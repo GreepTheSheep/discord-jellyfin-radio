@@ -1,6 +1,5 @@
-/** @type {categoryInfo[]} */
-const { ChannelType } = require('discord-api-types/v9');
-const categoryInfos = require('../commands/categoryInfo.json');
+import { ChannelType } from 'discord-api-types/v9';
+import categoryInfos from '../commands/categoryInfo.json' with { type: 'json' };
 
 class Command {
     constructor(exports, category = null) {
@@ -54,7 +53,7 @@ class Command {
     }
 }
 
-module.exports = Command;
+export default Command;
 
 /**
  * @typedef {Object} commandArgs The arguments of a commaand

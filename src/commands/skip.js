@@ -1,25 +1,22 @@
-const Command = require('../structures/Command'),
-    {MessageEmbed, CommandInteraction, SelectMenuInteraction, Message, MessageActionRow, MessageButton, MessageSelectMenu, ButtonStyle, Client } = require('discord.js');
+import { CommandInteraction, ButtonInteraction, SelectMenuInteraction, ModalSubmitInteraction, Client } from 'discord.js';
 
 /**
  * Set the command here, it's what we'll type in the message
  * @type {string}
  */
-exports.name = 'radio_skip';
-
+export const name = 'radio_skip';
 
 /**
  * Set the description here, this is what will show up when you need help for the command
  * @type {string}
  */
-exports.description = 'Skips the current song';
-
+export const description = 'Skips the current song';
 
 /**
  * Set the command arguments here, this is what will show up when you type the command
  * @type {Command.commandArgs[]}
  */
-exports.args = [];
+export const args = [];
 
 /**
  * Set the usage here, this is what will show up when you type the command
@@ -28,7 +25,7 @@ exports.args = [];
  * @param {Command[]} commands
  * @param {Client} client
  */
-exports.execute = async (interaction, commands, client) => {
+export const execute = async (interaction, commands, client) => {
     client.radio.stopPlaying();
     let reply = await interaction.reply({
         content: ':+1:',
@@ -45,7 +42,7 @@ exports.execute = async (interaction, commands, client) => {
  * @param {string} argument
  * @param {Command[]} commands
  */
-exports.executeButton = async (interaction, buttonId, argument, commands) => {};
+export const executeButton = async (interaction, buttonId, argument, commands) => {};
 
 /**
  * This method is executed when an update is made in a selectMenu
@@ -54,7 +51,7 @@ exports.executeButton = async (interaction, buttonId, argument, commands) => {};
  * @param {string} argument
  * @param {Command[]} commands
  */
-exports.executeSelectMenu = async (interaction, categoryId, argument, commands) => {};
+export const executeSelectMenu = async (interaction, categoryId, argument, commands) => {};
 
 /**
  * This method is executed when a modal dialog is submitted
@@ -63,4 +60,4 @@ exports.executeSelectMenu = async (interaction, categoryId, argument, commands) 
  * @param {string} argument
  * @param {Command[]} commands
  */
-exports.executeModal = async (interaction, modalId, argument, commands) => {};
+export const executeModal = async (interaction, modalId, argument, commands) => {};

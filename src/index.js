@@ -1,55 +1,67 @@
-require('dotenv').config();
-const Command = require('./structures/Command'),
-    { Client, GatewayIntentBits, Partials, ActivityType } = require('discord.js'),
-    Jellyfin = require("jellyfin"),
-    client = new Client({
-        intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates],
-        partials: [Partials.Channel]
-    }),
-    package = require("../package.json"),
-    jf = new Jellyfin.Client({
-        clientInfo: {
-            name: package.name,
-            version: package.version
-        },
-        dev: true
-    }),
-    Radio = require("./radio");
+import dotenv from 'dotenv';
+dotenv.config();
+import { Client, GatewayIntentBits, Partials, ActivityType } from 'discord.js';
+import { Jellyfin } from '@jellyfin/sdk';
+import { getUserApi } from '@jellyfin/sdk/lib/utils/api/user-api.js';
+import packageJson from '../package.json' with { type: 'json' };
+import Command from './structures/Command.js';
+import Radio from './radio.js';
+import fetchAllCommands from './fetchAllCommands.js';
+import registerCommandsScript from './registerCommandsScript.js';
+import crypto from 'node:crypto';
+
+const jellyfin = new Jellyfin({
+    clientInfo: {
+        name: packageJson.name,
+        version: packageJson.version
+    },
+    deviceInfo: {
+        name: packageJson.name,
+        id: packageJson.name
+    }
+});
+
+const api = jellyfin.createApi(process.env.JELLYFIN_URL);
+
+const authResult = await getUserApi(api).authenticateUserByName({
+    authenticateUserByName: {
+        Username: process.env.JELLYFIN_USERNAME,
+        Pw: process.env.JELLYFIN_PASSWORD
+    }
+});
+
+console.log("Connected to Jellyfin as", authResult.data.User.Name, "on", api.deviceInfo.name);
+
+const client = new Client({
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates],
+    partials: [Partials.Channel]
+});
 
 let radio = null;
-
-jf.login().then(()=>{
-    console.log("Connected to Jellyfin as", jf.user.name, "on", jf.options.deviceInfo.name);
-    client.login().catch(err=>{
-        console.error("❌ Connexion to Discord failed: " + err);
-        process.exit(1);
-    });
-});
 
 /**
  * The list of commands the bot will use
  * @type {Command[]}
  */
-let commands=[];
+let commands = [];
 
-
-client.on('clientReady', async () => {
+client.on('ready', async () => {
     console.log(`🤖 Logged in as ${client.user.tag}!`);
     /** @type {Radio} */
-    radio = new Radio(client, jf);
+    radio = new Radio(client, api, authResult.data.User);
     /** @type {Radio} */
     client.radio = radio;
 
-    commands = require('./fetchAllCommands')();
+    commands = await fetchAllCommands();
 
     // Register commands
-    await require('./registerCommandsScript')(null, client.user.id, commands);
+    await registerCommandsScript(null, client.user.id, commands);
     // client.guilds.cache.forEach(async (guild) => {
-    //     await require('./registerCommandsScript')(guild.id, client.user.id, commands);
+    //     await registerCommandsScript(guild.id, client.user.id, commands);
     // });
 
     // Check for aes-256-gcm support
-    if (!require('node:crypto').getCiphers().includes('aes-256-gcm')) {
+    if (!crypto.getCiphers().includes('aes-256-gcm')) {
         console.error("❌ AES-256-GCM is not supported on your system. Voice connections will not work.");
         process.exit(1);
     } else {
@@ -126,7 +138,7 @@ client.on('interactionCreate', async interaction => {
 
 client.on('guildCreate', guild=>{
     console.log('📌 New guild joined: ' + guild.name);
-    // require('./registerCommandsScript')(guild.id, client.user.id, commands);
+    // registerCommandsScript(guild.id, client.user.id, commands);
 });
 
 client.on('guildDelete', guild=>{
@@ -153,3 +165,8 @@ function kill() {
     }
     process.exit(0);
 }
+
+await client.login().catch(err => {
+    console.error("❌ Connexion to Discord failed: " + err);
+    process.exit(1);
+});

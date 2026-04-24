@@ -1,26 +1,23 @@
-const Command = require('../structures/Command'),
-    {EmbedBuilder, MessageEmbed, CommandInteraction, SelectMenuInteraction, Message, MessageActionRow, MessageButton, MessageSelectMenu, ButtonStyle, Client } = require('discord.js'),
-    { execSync } = require('child_process');
+import { EmbedBuilder, CommandInteraction, ButtonInteraction, SelectMenuInteraction, ModalSubmitInteraction, Client } from 'discord.js';
+import { execSync } from 'child_process';
 
 /**
  * Set the command here, it's what we'll type in the message
  * @type {string}
  */
-exports.name = 'radio_info';
-
+export const name = 'radio_info';
 
 /**
  * Set the description here, this is what will show up when you need help for the command
  * @type {string}
  */
-exports.description = 'Bot informations';
-
+export const description = 'Bot informations';
 
 /**
  * Set the command arguments here, this is what will show up when you type the command
  * @type {Command.commandArgs[]}
  */
-exports.args = [];
+export const args = [];
 
 /**
  * Set the usage here, this is what will show up when you type the command
@@ -29,12 +26,12 @@ exports.args = [];
  * @param {Command[]} commands
  * @param {Client} client
  */
-exports.execute = async (interaction, commands, client) => {
-    let package = require('../../package.json'),
-        version = package.version,
-        jellyfinVersion = package.dependencies['jellyfin'].replace('^', ''),
-        djsVersion = package.dependencies['discord.js'].replace('^', ''),
-        djsVoiceVersion = package.dependencies['@discordjs/voice'].replace('^', ''),
+export const execute = async (interaction, commands, client) => {
+    let packageJson = (await import('../../package.json', { with: { type: 'json' } })).default,
+        version = packageJson.version,
+        jellyfinVersion = packageJson.dependencies['@jellyfin/sdk'].replace('^', ''),
+        djsVersion = packageJson.dependencies['discord.js'].replace('^', ''),
+        djsVoiceVersion = packageJson.dependencies['@discordjs/voice'].replace('^', ''),
         gitCommit = execSync('git rev-parse --short HEAD').toString().trim(),
         gitCommitDate = new Date(execSync('git show -s --format=%ci HEAD').toString().trim());
 
@@ -51,7 +48,7 @@ exports.execute = async (interaction, commands, client) => {
         .addFields([
             {name:'Version', value:`v${version}\nGit commit: \`${gitCommit}\`\nBuilt at: <t:${gitCommitDate.getTime() / 1000}>`, inline:true},
             {name:'Uptime:', value:`${uptimeWeeks} weeks, ${uptimeDays} days, ${uptimeHours} hours, ${uptimeminutes} minutes`, inline:true},
-            {name:'Technical informations', value:`Node.js version ${process.version}\n[Discord.js](https://discord.js.org) version ${djsVersion}\n[Jellyfin Library](https://jellyfin-node.greep.fr) version ${jellyfinVersion}\n[Discord.js Voice](https://discord.js.org/docs/packages/voice/main) version ${djsVoiceVersion}`}
+            {name:'Technical informations', value:`Node.js version ${process.version}\n[Discord.js](https://discord.js.org) version ${djsVersion}\n[Jellyfin SDK](https://github.com/jellyfin/jellyfin-sdk-typescript) version ${jellyfinVersion}\n[Discord.js Voice](https://discord.js.org/docs/packages/voice/main) version ${djsVoiceVersion}`}
         ])
         .setThumbnail(interaction.client.user.displayAvatarURL({size:512}))
         .setFooter({
@@ -72,7 +69,7 @@ exports.execute = async (interaction, commands, client) => {
  * @param {string} argument
  * @param {Command[]} commands
  */
-exports.executeButton = async (interaction, buttonId, argument, commands) => {};
+export const executeButton = async (interaction, buttonId, argument, commands) => {};
 
 /**
  * This method is executed when an update is made in a selectMenu
@@ -81,7 +78,7 @@ exports.executeButton = async (interaction, buttonId, argument, commands) => {};
  * @param {string} argument
  * @param {Command[]} commands
  */
-exports.executeSelectMenu = async (interaction, categoryId, argument, commands) => {};
+export const executeSelectMenu = async (interaction, categoryId, argument, commands) => {};
 
 /**
  * This method is executed when a modal dialog is submitted
@@ -90,4 +87,4 @@ exports.executeSelectMenu = async (interaction, categoryId, argument, commands) 
  * @param {string} argument
  * @param {Command[]} commands
  */
-exports.executeModal = async (interaction, modalId, argument, commands) => {};
+export const executeModal = async (interaction, modalId, argument, commands) => {};

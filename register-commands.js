@@ -1,9 +1,10 @@
 // You can run the script individually.
 // node registerCommands.js -g <guildId> -u <botID>
-const args = process.argv.slice(2),
-    registerCommands = require('./src/registerCommandsScript'),
-    commands = require('./src/fetchAllCommands')();
-    // commands = [];
+const args = process.argv.slice(2);
+
+const { default: registerCommands } = await import('./src/registerCommandsScript.js');
+const { default: fetchAllCommands } = await import('./src/fetchAllCommands.js');
+const commands = await fetchAllCommands();
 
 if (args.includes('-u')) {
     const userId = args[args.indexOf(args.find(arg => arg.startsWith('-u'))) + 1];

@@ -1,7 +1,9 @@
-require('dotenv').config();
-const DJS = require("discord.js"),
-    rest = new DJS.REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN),
-    Command = require('./structures/Command');
+import dotenv from 'dotenv';
+dotenv.config();
+import * as DJS from 'discord.js';
+import Command from './structures/Command.js';
+
+const rest = new DJS.REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
 /**
  * Register all commands for a guild
@@ -126,4 +128,4 @@ async function registerCommands(guildId, userId, commands) {
     }
 }
 
-module.exports = registerCommands;
+export default registerCommands;
