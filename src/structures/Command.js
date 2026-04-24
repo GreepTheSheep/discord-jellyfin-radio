@@ -1,5 +1,7 @@
 import { ChannelType } from 'discord-api-types/v9';
-import categoryInfos from '../commands/categoryInfo.json' with { type: 'json' };
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const categoryInfos = require('../commands/categoryInfo.json');
 
 class Command {
     constructor(exports, category = null) {

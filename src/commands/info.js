@@ -1,5 +1,7 @@
 import { EmbedBuilder, CommandInteraction, ButtonInteraction, SelectMenuInteraction, ModalSubmitInteraction, Client } from 'discord.js';
 import { execSync } from 'child_process';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 /**
  * Set the command here, it's what we'll type in the message
@@ -27,7 +29,7 @@ export const args = [];
  * @param {Client} client
  */
 export const execute = async (interaction, commands, client) => {
-    let packageJson = (await import('../../package.json', { with: { type: 'json' } })).default,
+    let packageJson = require('../../package.json'),
         version = packageJson.version,
         jellyfinVersion = packageJson.dependencies['@jellyfin/sdk'].replace('^', ''),
         djsVersion = packageJson.dependencies['discord.js'].replace('^', ''),
