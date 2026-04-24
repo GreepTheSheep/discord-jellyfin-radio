@@ -45,6 +45,13 @@ export const execute = async (interaction, commands, client) => {
             value: nowPlayingItem.Album ?? "Unknown"
         }
     ]);
+    if (!client.radio.isRadioMode) {
+        embed.addFields({
+            name: "Mode",
+            value: "Queue mode"
+        });
+    }
+
     embed.setThumbnail(client.radio.jellyfin.basePath + "/Items/" + nowPlayingItem.Id + "/Images/Primary");
 
     interaction.reply({

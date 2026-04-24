@@ -88,42 +88,48 @@ client.on('interactionCreate', async interaction => {
 
         } else if (interaction.isStringSelectMenu()) {
 
-            const command = commands.find(c => c.name === interaction.customId.split('_')[0]);
+            const command = commands.find(c => interaction.customId.startsWith(c.name + '_'));
             if (!command) return;
 
-            let idIndexOf = interaction.customId.indexOf('_')+1,
-                categoryId = interaction.customId.substring(idIndexOf, interaction.customId.indexOf('_', idIndexOf)),
-                argument = null;
-
-            if (categoryId === command.name+'_') categoryId = interaction.customId.substring(idIndexOf);
-            else argument = interaction.customId.substring(interaction.customId.indexOf('_', idIndexOf)+1);
+            let rest = interaction.customId.substring(command.name.length + 1);
+            let categoryId = rest;
+            let argument = null;
+            let secondUnderscore = rest.indexOf('_');
+            if (secondUnderscore !== -1) {
+                categoryId = rest.substring(0, secondUnderscore);
+                argument = rest.substring(secondUnderscore + 1);
+            }
 
             await command.executeSelectMenu(interaction, categoryId, argument, commands);
 
         } else if (interaction.isButton()) {
 
-            const command = commands.find(c => c.name === interaction.customId.split('_')[0]);
+            const command = commands.find(c => interaction.customId.startsWith(c.name + '_'));
             if (!command) return;
 
-            let idIndexOf = interaction.customId.indexOf('_')+1,
-                buttonId = interaction.customId.substring(idIndexOf, interaction.customId.indexOf('_', idIndexOf)),
-                argument = null;
-
-            if (buttonId === command.name+'_') buttonId = interaction.customId.substring(idIndexOf);
-            else argument = interaction.customId.substring(interaction.customId.indexOf('_', idIndexOf)+1);
+            let rest = interaction.customId.substring(command.name.length + 1);
+            let buttonId = rest;
+            let argument = null;
+            let secondUnderscore = rest.indexOf('_');
+            if (secondUnderscore !== -1) {
+                buttonId = rest.substring(0, secondUnderscore);
+                argument = rest.substring(secondUnderscore + 1);
+            }
 
             await command.executeButton(interaction, buttonId, argument, commands);
 
         } else if (interaction.isModalSubmit()) {
-            const command = commands.find(c => c.name === interaction.customId.split('_')[0]);
+            const command = commands.find(c => interaction.customId.startsWith(c.name + '_'));
             if (!command) return;
 
-            let idIndexOf = interaction.customId.indexOf('_')+1,
-                modalId = interaction.customId.substring(idIndexOf, interaction.customId.indexOf('_', idIndexOf)),
-                argument = null;
-
-            if (modalId === command.name+'_') modalId = interaction.customId.substring(idIndexOf);
-            else argument = interaction.customId.substring(interaction.customId.indexOf('_', idIndexOf)+1);
+            let rest = interaction.customId.substring(command.name.length + 1);
+            let modalId = rest;
+            let argument = null;
+            let secondUnderscore = rest.indexOf('_');
+            if (secondUnderscore !== -1) {
+                modalId = rest.substring(0, secondUnderscore);
+                argument = rest.substring(secondUnderscore + 1);
+            }
 
             await command.executeModal(interaction, modalId, argument, commands);
         }
