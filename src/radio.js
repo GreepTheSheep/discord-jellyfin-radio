@@ -101,7 +101,11 @@ class Radio {
         );
 
         try {
-            let audioResource = djsVoice.createAudioResource(streamUrl, {
+            const response = await this.jellyfin.axiosInstance.get(streamUrl, {
+                responseType: 'stream',
+                timeout: 30000
+            });
+            let audioResource = djsVoice.createAudioResource(response.data, {
                 inputType: djsVoice.StreamType.Arbitrary,
                 metadata: {
                     title: this.nowPlayingItem.Name,
@@ -115,7 +119,7 @@ class Radio {
 
             return djsVoice.entersState(this.player, djsVoice.AudioPlayerStatus.Playing, 5000);
         } catch (err) {
-            console.error("Error loading track (" + this.nowPlayingItem.Name + "): " + err.message);
+            console.error("Error loading track (" + this.nowPlayingItem.Name + "): " + (err.response?.status || err.message));
             await new Promise(r => setTimeout(r, 1000));
             return this.playToPlayer();
         }
