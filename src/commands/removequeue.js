@@ -45,7 +45,7 @@ export const execute = async (interaction, commands, client) => {
     });
     setTimeout(()=>{
         if (reply != null) reply.delete().catch(()=>{});
-    }, 3000);
+    }, 5000);
 };
 
 /**

@@ -23,9 +23,12 @@ export const args = [];
 export const execute = async (interaction, commands, client) => {
     client.radio.clearQueue();
 
-    await interaction.reply({
+    let reply = await interaction.reply({
         content: 'The queue has been cleared.'
     });
+    setTimeout(()=>{
+        if (reply != null) reply.delete().catch(()=>{});
+    }, 20000);
 };
 
 /**

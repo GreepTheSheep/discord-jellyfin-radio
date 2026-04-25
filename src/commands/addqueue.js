@@ -102,10 +102,13 @@ export const executeButton = async (interaction, buttonId, argument, commands) =
 
     interaction.client.radio.addToQueue(item, interaction.user.id, interaction.user.username);
 
-    await interaction.reply({
+    let reply = await interaction.reply({
         content: `**${item.Name}** was added to the queue by **${interaction.user.username}**.`,
         ephemeral: false
     });
+    setTimeout(()=>{
+        if (reply != null) reply.delete().catch(()=>{});
+    }, 10000);
 };
 
 /**
